@@ -10,7 +10,11 @@ use Illuminate\Queue\SerializesModels;
 class TopicCreated extends Mailable
 {
     use Queueable, SerializesModels;
-
+    
+    private $firstname = 'faraz';
+    private $lastname = 'salehi';
+    public $introduction = 'a simple mail to a user';
+    public $fullname;
     /**
      * Create a new message instance.
      *
@@ -18,7 +22,7 @@ class TopicCreated extends Mailable
      */
     public function __construct()
     {
-        //
+        $this->fullname = $this->firstname.' '.$this->lastname;
     }
 
     /**
