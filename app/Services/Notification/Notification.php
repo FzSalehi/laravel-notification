@@ -2,21 +2,25 @@
 
 namespace App\Services\Notification;
 
-use App\Models\User;
-use App\Services\Sms\Sms;
-use Illuminate\Contracts\Mail\Mailable;
-use Illuminate\Support\Facades\Mail;
 
+use App\Services\Notification\Providers\Contracts\Provider;
+/**
+ * @method sendSms(App\User $user,Stirng $message)
+ * @method sendEmail(App\User $user,Mailable $message)
+ */
 class Notification
 {
-    public function sendEmail(User $user, Mailable $mailable)
+    public function __call($name, $arguments)
     {
-        return Mail::to($user)->send($mailable);
+        //$provider = substr($name,4);
+        $provider = __NAMESPACE__.'\Providers\\'.substr($name,4).'Provider';
+
+        if(!class_exists($provider)) throw new \Exception('Provider not found');
+
+        $provider = new $provider(... $arguments);
+        if(!is_subclass_of($provider , Provider::class)) throw new \Exception("notification must implements Provider");
+        $provider->send(); 
+        
     }
-    public function sendSms($number, $message)
-    { 
-        $sms = resolve(Sms::class);
-        $res = $sms->send($number, $message);
-        if (!$res) dd($sms->getResponse());
-    }
+
 }
