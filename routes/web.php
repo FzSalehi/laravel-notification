@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use App\Services\Notification\Notification;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,10 +22,12 @@ use App\Services\Notification\Notification;
 Route::get('/', function () {
     //Mail::to('faraz@gmail.com')->send(new TopicCreated);
 
-    $notification = resolve(Notification::class);
+    // $notification = resolve(Notification::class);
 
-    //$notification->sendEmail(User::find(1),new TopicCreated);
-    $user = User::find(1);
-    $notification->sendSms($user->phone_number,'slam');
-    
+    // $notification->sendEmail(User::find(1),new TopicCreated);
+    // $user = User::find(1);
+    // $notification->sendSms($user->phone_number,'slam');
+    return view('auth.login');
 });
+
+Auth::routes();
