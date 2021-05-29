@@ -7,10 +7,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class TopicCreated extends Mailable
+class ForgetPassword extends Mailable
 {
     use Queueable, SerializesModels;
-    
+
     /**
      * Create a new message instance.
      *
@@ -28,6 +28,6 @@ class TopicCreated extends Mailable
      */
     public function build()
     {
-        return $this->markdown('topic-created');
+        return $this->markdown('emails.forget_password');
     }
 }
