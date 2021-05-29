@@ -1,6 +1,13 @@
 <?php
 
+use App\Http\Controllers\NotificationsController;
+use App\Mail\TopicCreated;
+
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Mail;
+use App\Models\User;
+use App\Services\Notification\Notification;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +20,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Auth::routes();
+
+Route::view('/','welcome');
+
+Route::view('/home', 'home');
+Route::get('/notify/email', [NotificationsController::class, 'form'])->name('notification.form');
+Route::post('/notify/email', [NotificationsController::class, 'byEmail'])->name('notification.notify');
