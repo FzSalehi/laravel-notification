@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\NotificationsController;
 use App\Mail\TopicCreated;
 
 use Illuminate\Support\Facades\Route;
@@ -19,15 +20,10 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::get('/', function () {
-    //Mail::to('faraz@gmail.com')->send(new TopicCreated);
-
-    // $notification = resolve(Notification::class);
-
-    // $notification->sendEmail(User::find(1),new TopicCreated);
-    // $user = User::find(1);
-    // $notification->sendSms($user->phone_number,'slam');
-    return view('auth.login');
-});
-
 Auth::routes();
+
+Route::view('/','welcome');
+
+Route::view('/home', 'home');
+Route::get('/notify/email', [NotificationsController::class, 'form'])->name('notification.form');
+Route::post('/notify/email', [NotificationsController::class, 'byEmail'])->name('notification.notify');
