@@ -1,7 +1,7 @@
 @component('mail::message')
-# {{$introduction}}
+# Introduction
 
-Hello {{$textview}},
+{{$textview}}.
 
 @component('mail::button', ['url' => ''])
 Button Text
