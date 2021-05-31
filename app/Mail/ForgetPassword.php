@@ -11,6 +11,7 @@ class ForgetPassword extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $message;
     /**
      * Create a new message instance.
      *
@@ -18,7 +19,7 @@ class ForgetPassword extends Mailable
      */
     public function __construct(string $message)
     {
-        $this->textView = $message;
+        $this->message = $message;
     }
 
     /**
