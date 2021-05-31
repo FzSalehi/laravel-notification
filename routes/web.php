@@ -1,12 +1,7 @@
 <?php
 
 use App\Http\Controllers\NotificationsController;
-use App\Mail\TopicCreated;
-
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Mail;
-use App\Models\User;
-use App\Services\Notification\Notification;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -25,5 +20,9 @@ Auth::routes();
 Route::view('/','welcome');
 
 Route::view('/home', 'home');
-Route::get('/notify/email', [NotificationsController::class, 'form'])->name('notification.form');
-Route::post('/notify/email', [NotificationsController::class, 'byEmail'])->name('notification.notify');
+Route::get('/notify/email', [NotificationsController::class, 'EmailForm'])->name('notification.emailForm');
+Route::post('/notify/email', [NotificationsController::class, 'sendEmail'])->name('notification.sendEmail');
+
+
+Route::get('/notify/sms',[NotificationsController::class,'SmsForm'])->name('notification.smsForm');
+Route::post('/notify/sms',[NotificationsController::class,'sendSms'])->name('notification.sendSms');
