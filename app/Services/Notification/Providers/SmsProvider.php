@@ -6,6 +6,7 @@ use App\Models\User;
 use GuzzleHttp\Client;
 use App\Services\Sms\Sms;
 use App\Services\Notification\Providers\Contracts\Provider;
+
 class SmsProvider implements Provider
 {
     private $number;
@@ -15,27 +16,34 @@ class SmsProvider implements Provider
     {
         $this->number = $user->phone_number;
         $this->message = $message;
+        
     }
 
     public function send()
     {
-        $sms = resolve(Sms::class);
-        /* $res = $sms->send($this->number, $this->message);
-        if (!$res) dd($sms->getResponse());
-        return $res; 
-        */
         $client = new Client();
-        $client->setDefaultOption('headers', [
-            'base_url' => config('services.sms.url'),
-            'Authorization' => 'basic apikey:' . config('services.sms.api'),
-            'Content-Type' => 'application/json',
-        ]);
-        
-        $client->request('post', 'Message/SendSms', [
-            'SmsBody' => 'text',
-            'mobiles' => '091860453460',
-            'SmsNumber' => '',
-        ]);
-        dd($client);
+
+        $response = $client->post('https://sms.parsgreen.ir/Apiv2/Message/SendSms', $this->smsOptions());
+
+        return $response->getStatusCode() == 200;
+
+    }
+
+    private function smsOptions()
+    {
+        $body = [
+            'SmsBody' => $this->message,
+            'Mobiles' => [$this->number],
+            'SmsNumber' => 'nisi',
+        ];
+
+        return [
+            'headers' => [
+                'Host' => 'sms.parsgreen.ir',
+                'Authorization' => 'basic apikey:'.env('SMS_API'),
+                'Content-Type' => 'application/json',
+            ],
+            'json' => $body
+        ];
     }
 }

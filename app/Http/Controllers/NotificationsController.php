@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendEmail;
+use App\Jobs\SendSms;
 use App\Models\User;
 use App\Services\Notification\Constants\EmailTypes;
 use App\Services\Notification\Notification;
+use Exception;
 use Illuminate\Http\Request;
 
 class NotificationsController extends Controller
@@ -15,7 +18,7 @@ class NotificationsController extends Controller
         $this->middleware('auth');
         $this->notification = resolve(Notification::class);
     }
-    
+
     public function EmailForm()
     {
         $users = User::all(['id', 'name']);
@@ -28,20 +31,19 @@ class NotificationsController extends Controller
 
         $request = $this->validateRequest($request);
         try{
-            
+
             $emailType = EmailTypes::getMailClass($request['email_type']);
-            $this->notification->sendEmail(auth()->user(),new $emailType($request['message']));
+            SendEmail::dispatch(auth()->user(),new $emailType($request['message']));
             return redirect()->back()->with([
                 'success' => __('email.sent_successfully'),
             ]);
         }catch(\Throwable $e)
         {
-            dd($e->getMessage());
-            return redirect()->back()->with([ 
+            return redirect()->back()->with([
                 'failed' => __('email.sent_failed'),
             ]);
         }
-        
+
     }
 
     public function smsForm()
@@ -53,7 +55,20 @@ class NotificationsController extends Controller
     public function sendSms(Request $request)
     {
         $request = $this->validateRequestSms($request);
-        $this->notification->sendSms(auth()->user(),$request['message']);
+
+        try{
+            //SendSms::dispatch(auth()->user(),$request['message']);
+            $this->notification->sendSms(auth()->user(),$request['message']);
+            return redirect()->back()->with([
+                'success' => __('sms.sent_successfully'),
+            ]);
+        }catch(\Throwable $e)
+        {
+            return redirect()->back()->with([
+                'failed' => __('sms.sent_failed'),
+            ]);
+        }
+
     }
 
     private function validateRequest(Request $request)
@@ -69,7 +84,7 @@ class NotificationsController extends Controller
     {
         return $request->validate([
             'user' => ['required', 'integer', 'exists:users,id'],
-            'message' => 'string',
+            'message' => ['required','string'],
         ]);
     }
 }

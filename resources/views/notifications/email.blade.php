@@ -20,13 +20,13 @@
                 <div class="card-header">@lang('notification.title')</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('notification.notify') }}">
+                    <form method="POST" action="{{ route('notification.sendEmail') }}">
                         @csrf
                         <div class="form-group">
                             <label for="users">@lang('notification.select_user')</label>
                             <select class="form-control" id="users" name="user">
                                 @foreach ($users as  $user)
-                                    <option  value="{{ $user->id }}">{{ $user->name}}</option>
+                                    <option  value="{{ $user->id }}">{{ $user->name }}</option>
                                 @endforeach
                             </select>
                             @error('user')
